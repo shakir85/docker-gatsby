@@ -33,12 +33,23 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | b
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
 
-# Below put all Gatsy installation.
-# Fixed port (e.g. EXPOSE 8000)and hostname mapping 
-# as well as any other required installations.
-# ------------
-# Docker entry command should be like:
-#   CMD cd $WEBSITE_DIR && gatsby develop -H 192.164.1.64 -p 8000
-# ------------
+# Gatsby needs Node v12 & higher
+RUN nvm install 12 && \
+    nvm alias default 12
+
+# Instal Gatsby cli tool
+RUN npm install -g gatsby-cli
+
+# Create new Gatsby website
+RUN mkdir /gatsby
+WORKDIR /gatsby
+
+RUN gatsby new static-website 
+WORKDIR /gatsby/static-website
+
+#CMD gatsby develop -H 192.168.1.64 -p 8000
+CMD [ "gatsby", "develop", "-H 192.168.1.64", "-p 8000" ]
+
+
 # Test on host machine using: curl --insecure http://192.168.1.64:8000
 #
