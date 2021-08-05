@@ -24,8 +24,8 @@ ENV NVM_DIR ~/.nvm
 ENV NODE_VERSION 14.17.4
 
 # Install nvm with node and npm
-RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | bash \
-    && /bin/sh $NVM_DIR/nvm.sh \
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.20.0/install.sh | bash 
+RUN /bin/sh -c $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && nvm use default
