@@ -23,7 +23,7 @@ RUN apt-get update && \
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 14.17.4
 
-# Install nvm with node and npm
+# Install nvm
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
 
 # install node and npm
@@ -37,7 +37,8 @@ ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 # Instal Gatsby cli tool
-RUN npm install -g gatsby-cli
+RUN npm install -g gatsby-cli && \
+    gatsby telemetry --disable
 
 # Create new Gatsby website
 RUN mkdir /gatsby
