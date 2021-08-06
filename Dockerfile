@@ -48,4 +48,4 @@ WORKDIR /gatsby/static-website
 EXPOSE 8000
 
 #CMD gatsby develop -H 192.168.1.64 -p 8000
-CMD [ "gatsby", "develop", "-p 8000" ]
+CMD [ "gatsby", "develop", "--host", "0.0.0.0", "-p 8000" ]
