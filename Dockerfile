@@ -15,6 +15,7 @@ RUN apt-get update && \
         curl \
         git \
         libssl-dev \
+        htop \
     && rm -rf /var/lib/apt/lists/*
 
 # nvm dir path & version env vars
@@ -38,14 +39,22 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN npm install -g gatsby-cli && \
     gatsby telemetry --disable
 
-# create new Gatsby website
-RUN mkdir /gatsby
-WORKDIR /gatsby
+# kinda security stuff: run app as user, not root.
+ENV APP_USER    appuser
+ENV APP_GROUP   appuser
+RUN mkdir -p /home/appuser/gatsby
+RUN groupadd -g 1111 -r ${APP_GROUP} && \
+    useradd -g 1111 -d /home/appuser/ -s /bin/bash ${APP_USER}
 
-RUN gatsby new static-website 
-WORKDIR /gatsby/static-website
 
+# create a new Gatsby website
+WORKDIR /home/appuser/gatsby
+RUN gatsby new static-website && \
+    chown -R $APP_USER:$APP_GROUP /home/appuser/
+    # \ && chmod -R 770 /home/appuser/
+WORKDIR /home/appuser/static-website
+USER $APP_USER
 EXPOSE 8000
 
-#CMD gatsby develop -H 192.168.1.64 -p 8000
+# gatsby develop --host 0.0.0.0 -p 8000
 CMD [ "gatsby", "develop", "--host", "0.0.0.0", "-p 8000" ]
